@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>संधि महारथी — KBC Style Quiz</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Noto Sans Devanagari",Arial,sans-serif;background:radial-gradient(circle at top,#1b1450,#080616 55%,#03020a);color:#fff;min-height:100vh}
+.container{max-width:1100px;margin:auto;padding:18px}.top{text-align:center}.brand{font-size:14px;letter-spacing:2px;color:#d9c8ff}.title{font-size:clamp(28px,5vw,52px);font-weight:900;color:#ffd85a;text-shadow:0 0 18px #8b5cf6;margin:8px 0}.subtitle{color:#ddd}
+.stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}.pill{background:#15102d;border:1px solid #7255c8;border-radius:30px;padding:9px 16px}.pill b{color:#ffd85a}
+.game{background:linear-gradient(145deg,#17102e,#0d0a20);border:2px solid #6f4bd8;border-radius:25px;padding:22px;box-shadow:0 0 35px #4c1d9555}
+.progress{height:8px;background:#292044;border-radius:10px;overflow:hidden;margin-bottom:20px}.bar{height:100%;background:linear-gradient(90deg,#ffd84d,#a855f7);width:0%;transition:.3s}
+.qno{text-align:center;color:#cbbdff;font-weight:bold}.question{font-size:clamp(20px,3vw,31px);line-height:1.55;text-align:center;margin:16px auto 25px;max-width:900px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:14px}.option{border:2px solid #6747b7;background:#17112f;color:#fff;border-radius:14px;padding:15px 18px;font-size:18px;text-align:left;cursor:pointer;transition:.2s}.option:hover{transform:translateY(-2px);border-color:#ffd85a}.option:disabled{cursor:default}.correct{background:#14532d!important;border-color:#4ade80!important}.wrong{background:#651b2a!important;border-color:#fb7185!important}
+.explain{display:none;margin-top:20px;padding:18px;border-radius:15px;background:#100d20;border-left:5px solid #ffd85a;line-height:1.7}.explain.show{display:block}.reward{display:none;text-align:center;margin:16px 0;padding:15px;border-radius:15px;background:linear-gradient(90deg,#3b0764,#7c2d12,#3b0764);animation:pop .5s}.reward.show{display:block}.reward strong{font-size:22px;color:#ffd85a}@keyframes pop{50%{transform:scale(1.04)}}
+.actions{text-align:center;margin-top:22px}.btn{border:0;border-radius:30px;padding:12px 26px;background:#ffd84d;color:#241400;font-weight:800;cursor:pointer;font-size:16px}.btn:disabled{opacity:.4;cursor:not-allowed}
+#result{display:none;text-align:center}.score{font-size:65px;color:#ffd85a;font-weight:900}.certificate{margin:18px auto;padding:20px;border:2px solid #ffd85a;border-radius:18px;max-width:650px;background:#15102d}
+.lifelines{display:flex;justify-content:center;gap:8px;margin-bottom:15px}.life{background:#24184d;color:#fff;border:1px solid #8064d9;border-radius:20px;padding:8px 12px;cursor:pointer}.life:disabled{opacity:.35}
+@media(max-width:650px){.options{grid-template-columns:1fr}.option{font-size:16px}.game{padding:14px}.question{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="top">
+<div class="brand">RAHUL BHUSHAN • HINDI GRAMMAR MASTER QUIZ</div>
+<div class="title">संधि महारथी</div>
+<div class="subtitle">KBC Style • उच्च-उन्नत स्तर • 30 Questions • Randomized Options</div>
+</header>
+<div class="stats">
+<div class="pill">प्रश्न: <b id="count">1/30</b></div><div class="pill">स्कोर: <b id="score">0</b></div>
+<div class="pill">सही: <b id="right">0</b></div><div class="pill">गलत: <b id="wrong">0</b></div>
+</div>
+<div class="game" id="game">
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="lifelines"><button class="life" id="fifty">50:50</button><button class="life" id="hintBtn">संकेत</button></div>
+<div class="qno" id="qno"></div><div class="question" id="question"></div>
+<div class="options" id="options"></div>
+<div class="reward" id="reward">🎉 <strong>बहुत बढ़िया! भागीदारी पुरस्कार +10</strong><br>आपने सही उत्तर देकर अगला पड़ाव सुरक्षित किया।</div>
+<div class="explain" id="explain"></div>
+<div class="actions"><button class="btn" id="next" disabled>अगला प्रश्न →</button></div>
+</div>
+<div id="result">
+<div class="title">क्विज़ पूर्ण!</div><div class="score" id="finalScore">0</div>
+<div class="certificate"><h2>🏆 संधि महारथी</h2><p id="resultText"></p><p>RAHUL BHUSHAN</p></div>
+<button class="btn" onclick="location.reload()">फिर से खेलें</button>
+</div>
+</div>
+<script>
+const questions = [{"q": "‘अत्यावश्यक’ का सही संधि-विच्छेद और संधि-प्रकार क्या है?", "o": ["अति + आवश्यक — यण संधि", "अत् + यावश्यक — व्यंजन संधि", "अत्य + आवश्यक — गुण संधि", "अति + आवश्यक — गुण संधि"], "a": 0, "e": "‘अति’ के अंतिम इ के बाद ‘आवश्यक’ का आ आता है। इ के स्थान पर य् हो जाता है और ‘अति + आवश्यक’ से ‘अत्यावश्यक’ बनता है। स्वर के स्थान पर अर्धस्वर आने के कारण यह यण संधि है।"}, {"q": "निम्न में से किस विकल्प में संधि-विच्छेद तथा संधि-प्रकार दोनों शुद्ध हैं?", "o": ["परोपकार = परो + पकार — यण संधि", "परोपकार = पर + उपकार — गुण संधि", "परोपकार = पर + औपकार — वृद्धि संधि", "परोपकार = पर + ओपकार — दीर्घ संधि"], "a": 1, "e": "‘पर’ का अंतिम अ और ‘उपकार’ का प्रारंभिक उ मिलकर ओ बनाते हैं। अ + उ = ओ, इसलिए यह गुण संधि है और विच्छेद ‘पर + उपकार’ होगा।"}, {"q": "‘प्रत्युत्तर’ में कौन-सा संधि-विधान कार्य करता है?", "o": ["प्रति + उत्तर — दीर्घ संधि", "प्रत् + युत्तर — व्यंजन संधि", "प्रति + उत्तर — यण संधि", "प्रत्यु + उत्तर — गुण संधि"], "a": 2, "e": "‘प्रति’ के अंतिम इ के बाद ‘उत्तर’ का उ आने पर इ का य् हो जाता है। अतः प्रति + उत्तर → प्रत्युत्तर। यह यण संधि का स्पष्ट उदाहरण है।"}, {"q": "‘महर्षि’ का ऐसा विच्छेद चुनिए जो उसके स्वर-परिवर्तन को सही ढंग से स्पष्ट करता हो।", "o": ["महि + ऋषि — दीर्घ संधि", "महा + ऋषि — वृद्धि संधि", "मह + ऋषि — यण संधि", "महा + ऋषि — गुण संधि"], "a": 3, "e": "‘महा’ के अंतिम आ और ‘ऋषि’ के ऋ के मेल से ‘अर्’ बनता है। यह गुण संधि का विधान है: महा + ऋषि → महर्षि। इसलिए विकल्प C सही है।"}, {"q": "‘सदैव’ में प्रयुक्त संधि की पहचान कीजिए।", "o": ["सदा + एव — वृद्धि संधि", "सदा + इव — यण संधि", "सत् + एव — व्यंजन संधि", "सद + एव — गुण संधि"], "a": 0, "e": "‘सदा’ का अंतिम आ और ‘एव’ का ए मिलकर ऐ बनाते हैं। आ + ए = ऐ, जो वृद्धि संधि का नियम है। इसलिए सदा + एव → सदैव।"}, {"q": "‘वनौषधि’ के निर्माण में कौन-सा नियम लागू होता है?", "o": ["वन + उषधि — दीर्घ संधि", "वन + औषधि — वृद्धि संधि", "वन + ओषधि — गुण संधि", "वन + औषधि — यण संधि"], "a": 1, "e": "‘वन’ के अ और ‘औषधि’ के औ के मेल से औ ही रहता है। अ + औ = औ; इसे वृद्धि संधि के अंतर्गत रखा जाता है। अतः वन + औषधि → वनौषधि।"}, {"q": "‘इत्यादि’ के निर्माण को सबसे सटीक रूप में कौन-सा विकल्प बताता है?", "o": ["इत् + यादि — व्यंजन संधि", "इति + आदि — गुण संधि", "इति + आदि — यण संधि", "इती + आदि — दीर्घ संधि"], "a": 2, "e": "‘इति’ का अंतिम इ, ‘आदि’ के आ से मिलने पर य् में परिवर्तित होता है। इस प्रकार इति + आदि → इत्यादि। स्वर के स्थान पर य् आने के कारण यह यण संधि है।"}, {"q": "‘सूक्ति’ का संधि-विच्छेद और प्रकार क्या है?", "o": ["सु + उक्ति — यण संधि", "सुव् + उक्ति — व्यंजन संधि", "सु + उक्ति — गुण संधि", "सु + उक्ति — दीर्घ संधि"], "a": 3, "e": "‘सु’ के उ और ‘उक्ति’ के उ के मेल से ऊ बनता है। समान स्वर के दीर्घ रूप में परिणत होने के कारण यह दीर्घ संधि है: सु + उक्ति → सूक्ति।"}, {"q": "‘गिरीश’ का सही विश्लेषण कौन-सा है?", "o": ["गिरि + ईश — दीर्घ संधि", "गिर् + ईश — यण संधि", "गिरि + एश — वृद्धि संधि", "गिरि + ईश — गुण संधि"], "a": 0, "e": "इ + ई के मेल से दोनों का दीर्घ रूप ई बनता है। इसलिए गिरि + ईश → गिरीश और यह दीर्घ संधि है।"}, {"q": "‘विद्यालय’ में संधि का सबसे उपयुक्त विश्लेषण है—", "o": ["विद्या + अलय — गुण संधि", "विद्या + आलय — दीर्घ संधि", "विद् + यालय — व्यंजन संधि", "विद्य + आलय — यण संधि"], "a": 1, "e": "‘विद्या’ के अंतिम आ और ‘आलय’ के प्रारंभिक आ के मेल से एक दीर्घ आ बनता है। अतः विद्या + आलय → विद्यालय; यह दीर्घ संधि है।"}, {"q": "‘नरेन्द्र’ में ‘अ + इ’ के मेल का परिणाम क्या है?", "o": ["ऐ; इसलिए यह वृद्धि संधि है", "य; इसलिए यह यण संधि है", "ए; इसलिए यह गुण संधि है", "ई; इसलिए यह दीर्घ संधि है"], "a": 2, "e": "अ और इ के मेल से ए बनता है। यह गुण संधि का मूल नियम है। नर + इन्द्र → नरेन्द्र इसका मानक उदाहरण है।"}, {"q": "‘मतैक्य’ का संधि-विच्छेद और प्रकार क्या है?", "o": ["म + तैक्य — व्यंजन संधि", "मति + ऐक्य — यण संधि", "मत + एक्य — गुण संधि", "मत + ऐक्य — वृद्धि संधि"], "a": 3, "e": "‘मत’ का अंतिम अ और ‘ऐक्य’ का प्रारंभिक ऐ मिलकर ऐ ही देते हैं। अ + ऐ = ऐ; इसलिए यह वृद्धि संधि है और रूप ‘मतैक्य’ बनता है।"}, {"q": "‘मन्वंतर’ में किस स्वर का यण रूप दिखाई देता है?", "o": ["उ का व्", "इ का य्", "ऋ का र्", "ए का अय्"], "a": 0, "e": "मनु + अंतर में ‘मनु’ का अंतिम उ, अगले अ से मिलने पर व् में बदलता है। इस प्रकार मनु + अंतर → मन्वंतर। उ/ऊ के स्थान पर व् आना यण संधि का लक्षण है।"}, {"q": "‘अन्वेषण’ का सही संधि-विच्छेद कौन-सा है?", "o": ["अनु + ईषण — दीर्घ संधि", "अनु + एषण — यण संधि", "अन्वे + षण — व्यंजन संधि", "अन + वेषण — गुण संधि"], "a": 1, "e": "‘अनु’ का अंतिम उ, ‘एषण’ के ए से मिलने पर व् में बदलता है। अनु + एषण → अन्वेषण। इसलिए यह यण संधि है।"}, {"q": "‘सूर्योदय’ में कौन-सा परिवर्तन हुआ है?", "o": ["सूरि + उदय; इ + उ = यु, यण संधि", "सूर्य + ओदय; दीर्घ संधि", "सूर्य + उदय; अ + उ = ओ, गुण संधि", "सूर्य + उदय; अ + उ = औ, वृद्धि संधि"], "a": 2, "e": "‘सूर्य’ के अंतर्निहित अ और ‘उदय’ के उ के मेल से ओ बनता है। अ + उ = ओ गुण संधि का नियम है; इसलिए सूर्य + उदय → सूर्योदय।"}, {"q": "‘जगदीश’ का सही संधि-विच्छेद है—", "o": ["जगद् + ईश — गुण संधि", "जगत् + इश — दीर्घ संधि", "जग + दीश — यण संधि", "जगत् + ईश — व्यंजन संधि"], "a": 3, "e": "‘जगत्’ के अंत में त् है। ईश के ई से मिलने पर त् का द् रूप हो जाता है और जगत् + ईश → जगदीश बनता है। यह व्यंजन संधि है।"}, {"q": "‘सज्जन’ का संधि-विच्छेद किस विकल्प में सही है?", "o": ["सत् + जन — व्यंजन संधि", "सज् + जन — दीर्घ संधि", "सत् + जन् — यण संधि", "सद् + जन — गुण संधि"], "a": 0, "e": "सत् + जन में त्, ज के प्रभाव से ज् में परिवर्तित होकर संयुक्त ज्ज बनाता है। इसलिए सत् + जन → सज्जन और यह व्यंजन संधि है।"}, {"q": "‘तल्लीन’ का सही संधि-विच्छेद और परिवर्तन है—", "o": ["तत् + लीन — यण संधि", "तत् + लीन — त् का ल् के प्रभाव से ल् में परिवर्तन", "तद् + लीन — वृद्धि संधि", "तल् + लीन — गुण संधि"], "a": 1, "e": "तत् के अंतिम त् का ल के प्रभाव से ल् में परिवर्तन होता है। तत् + लीन → तल्लीन। यह व्यंजन संधि के अंतर्गत आता है।"}, {"q": "‘दिग्गज’ में मूल शब्दों का सही मेल कौन-सा है?", "o": ["दि + ग्गज — यण संधि", "दिग् + गज — गुण संधि", "दिक् + गज — व्यंजन संधि", "दिक् + अज — वृद्धि संधि"], "a": 2, "e": "‘दिक्’ के अंतिम क् का घोष व्यंजन ग के प्रभाव से ग् में परिवर्तन होता है और ग्ग का संयुक्त रूप बनता है। अतः दिक् + गज → दिग्गज।"}, {"q": "‘वागीश’ का शुद्ध संधि-विच्छेद और प्रकार है—", "o": ["वा + गीश — यण संधि", "वाग् + ईश — गुण संधि", "वाक् + इश — दीर्घ संधि", "वाक् + ईश — व्यंजन संधि"], "a": 3, "e": "वाक् के अंत का क्, ईश के घोष स्वर के प्रभाव से ग् में बदलता है। वाक् + ईश → वागीश। यह व्यंजन संधि है।"}, {"q": "‘सद्भाव’ का सही संधि-विच्छेद कौन-सा है?", "o": ["सत् + भाव — व्यंजन संधि", "स + द्भाव — यण संधि", "सद् + भाव — गुण संधि", "सत् + भाव — वृद्धि संधि"], "a": 0, "e": "सत् के अंतिम त् का घोष भ के प्रभाव से द् में परिवर्तन होता है। सत् + भाव → सद्भाव। यह व्यंजन संधि का उदाहरण है।"}, {"q": "‘उद्धार’ का सही मूल-विभाजन है—", "o": ["उत् + धार — दीर्घ संधि", "उत् + हार — व्यंजन संधि", "उ + द्धार — यण संधि", "उद् + हार — गुण संधि"], "a": 1, "e": "उत् + हार में त् का द् रूप होता है और ह के साथ मिलकर द्ध का रूप दिखाई देता है। इसलिए सही विच्छेद उत् + हार है और यह व्यंजन संधि है।"}, {"q": "‘तपोवन’ में विसर्ग के संबंध में कौन-सा कथन सही है?", "o": ["तपः + वन; विसर्ग का य में परिवर्तन", "तप + वन; अ + व = ओ, गुण संधि", "तपः + वन; विसर्ग का ओ में परिवर्तन, विसर्ग संधि", "तपो + वन; यण संधि"], "a": 2, "e": "तपः के बाद घोष वर्ण ‘व’ आने पर विसर्ग का ओ रूप हो जाता है। तपः + वन → तपोवन। यह विसर्ग संधि का उदाहरण है।"}, {"q": "‘यशोदा’ का सही संधि-विच्छेद है—", "o": ["यश + ओदा — गुण संधि", "यशो + दा — यण संधि", "यस् + दा — व्यंजन संधि", "यशः + दा — विसर्ग संधि"], "a": 3, "e": "यशः के बाद दा का घोष व्यंजन आने पर विसर्ग का ओ रूप होता है। यशः + दा → यशोदा। इसलिए यह विसर्ग संधि है।"}, {"q": "‘निस्तेज’ का सही संधि-विच्छेद और प्रकार क्या है?", "o": ["निः + तेज — विसर्ग संधि", "नि + स्तेज — यण संधि", "निः + तैज — गुण संधि", "निस् + तेज — व्यंजन संधि"], "a": 0, "e": "‘निः’ के बाद त-वर्ग का अघोष व्यंजन ‘त’ आने पर विसर्ग का स् रूप हो जाता है। इसलिए निः + तेज → निस्तेज। यह विसर्ग संधि का उदाहरण है।"}, {"q": "निम्न में से कौन-सा युग्म ‘विसर्ग संधि’ का उदाहरण नहीं है?", "o": ["दुर्गति = दुः + गति", "परोपकार = पर + उपकार", "निराशा = निः + आशा", "मनोनुकूल = मनः + अनुकूल"], "a": 1, "e": "दुर्गति, निराशा और मनोनुकूल में विसर्ग-संधि के परिवर्तन देखे जाते हैं। ‘परोपकार’ में अ + उ से ओ बनने का गुण संधि-विधान है, इसलिए वही विकल्प विसर्ग संधि का उदाहरण नहीं है।"}, {"q": "निम्न में से किस विकल्प में संधि-प्रकार का वर्गीकरण गलत है?", "o": ["सदैव — वृद्धि संधि", "इत्यादि — यण संधि", "गिरीश — गुण संधि", "नरेन्द्र — गुण संधि"], "a": 2, "e": "नरेन्द्र में अ + इ = ए, इसलिए गुण; सदैव में आ + ए = ऐ, इसलिए वृद्धि; इत्यादि में इ → य्, इसलिए यण। ‘गिरीश’ में इ + ई = ई होने के कारण दीर्घ संधि है, गुण नहीं।"}, {"q": "निम्न में से किस विकल्प में संधि-विच्छेद अशुद्ध है?", "o": ["लोकेश = लोक + ईश", "हितोपदेश = हित + उपदेश", "महेश = महा + ईश", "विद्यालय = विद्या + अलय"], "a": 3, "e": "हित + उपदेश, महा + ईश और लोक + ईश सही विच्छेद हैं। ‘विद्यालय’ का सही विच्छेद ‘विद्या + आलय’ है, न कि ‘विद्या + अलय’; आ + आ के मेल से दीर्घ आ बनता है।"}, {"q": "‘निःशब्द’ में किस प्रकार का परिवर्तन माना जाता है?", "o": ["निः + शब्द — विसर्ग का श् रूप", "नि + शब्द — यण संधि", "निस् + शब्द — गुण संधि", "निः + सब्द — व्यंजन संधि"], "a": 0, "e": "विसर्ग के बाद ‘श’ आने पर विसर्ग का श् रूप हो जाता है। इसलिए निः + शब्द → निःशब्द/निश्शब्द के व्याकरणिक रूप-विचार में विसर्ग-संधि का नियम लागू होता है; मानक प्रचलित रूप ‘निःशब्द’ है।"}, {"q": "‘निष्कपट’ का सही विश्लेषण कौन-सा है?", "o": ["निस् + कपट — व्यंजन संधि", "निः + कपट — विसर्ग संधि", "निः + कपट — गुण संधि", "नि + ष्कपट — यण संधि"], "a": 1, "e": "विसर्ग के बाद क-वर्ग का अघोष व्यंजन आने पर विसर्ग का ष् रूप होता है। निः + कपट → निष्कपट। इसलिए यह विसर्ग संधि है।"}];
+let i=0,score=0,right=0,wrong=0,answered=false;
+const $=id=>document.getElementById(id);
+function sound(type){
+ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(),g=ctx.createGain();
+ o.connect(g);g.connect(ctx.destination);o.type="sine";o.frequency.value=type==="correct"?740:type==="wrong"?180:420;g.gain.value=.08;o.start();o.stop(ctx.currentTime+.18);
+}
+function shuffleQuestionOptions(){
+ const x=questions[i];
+ const items=x.o.map((text,idx)=>({text,correct:idx===x.a}));
+ for(let j=items.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[items[j],items[k]]=[items[k],items[j]];}
+ x.o=items.map(v=>v.text);
+ x.a=items.findIndex(v=>v.correct);
+}
+function load(){
+ answered=false;$("next").disabled=true;$("reward").classList.remove("show");$("explain").classList.remove("show");
+ shuffleQuestionOptions();
+ const x=questions[i];$("count").textContent=`${i+1}/30`;$("qno").textContent=`प्रश्न ${i+1} • 30 में से`;
+ $("question").textContent=x.q;$("bar").style.width=((i+1)/30*100)+"%";$("options").innerHTML="";
+ x.o.forEach((t,n)=>{let b=document.createElement("button");b.className="option";b.dataset.n=n;b.textContent=String.fromCharCode(65+n)+". "+t;b.onclick=()=>answer(n,b);$("options").appendChild(b)});
+}
+function answer(n,b){
+ if(answered)return;answered=true;let x=questions[i],buttons=[...document.querySelectorAll(".option")];
+ buttons.forEach(z=>z.disabled=true);
+ if(n===x.a){b.classList.add("correct");score+=10;right++;$("reward").classList.add("show");sound("correct");}
+ else{b.classList.add("wrong");buttons[x.a].classList.add("correct");wrong++;score=Math.max(0,score-3);sound("wrong");}
+ $("score").textContent=score;$("right").textContent=right;$("wrong").textContent=wrong;
+ $("explain").innerHTML="<b>व्याख्या:</b> "+x.e;$("explain").classList.add("show");$("next").disabled=false;
+}
+$("next").onclick=()=>{i++;if(i<30)load();else finish()};
+$("fifty").onclick=()=>{if(answered)return;let x=questions[i],bad=[0,1,2,3].filter(n=>n!==x.a).sort(()=>Math.random()-.5).slice(0,2);bad.forEach(n=>{let b=document.querySelectorAll(".option")[n];b.disabled=true;b.style.visibility="hidden"});$("fifty").disabled=true};
+$("hintBtn").onclick=()=>{if(!answered) alert("संकेत: शब्द के दोनों पद अलग करके स्वर/व्यंजन/विसर्ग के मेल और उसके परिवर्तन पर ध्यान दें।")};
+function finish(){$("game").style.display="none";$("result").style.display="block";$("finalScore").textContent=score+" अंक";$("resultText").textContent=`आपने 30 में से ${right} प्रश्न सही किए और ${wrong} गलत किए। प्रत्येक सही उत्तर पर भागीदारी पुरस्कार दिया गया है।`;}
+load();
+</script>
+</body></html>
